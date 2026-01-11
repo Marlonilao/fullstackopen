@@ -5,6 +5,10 @@ function App() {
   const [neutral, setNeutral] = useState(0);
   const [bad, setBad] = useState(0);
 
+  const all = good + neutral + bad;
+  const average = (all / 3).toFixed(2);
+  const positive = ((good / all) * 100).toFixed(2) + "%";
+
   const handleGoodClick = () => setGood(good + 1);
   const handleNeutralClick = () => setNeutral(neutral + 1);
   const handleBadClick = () => setBad(bad + 1);
@@ -16,13 +20,27 @@ function App() {
       <Button onClick={handleNeutralClick} text={"neutral"} />
       <Button onClick={handleBadClick} text={"bad"} />
       <h2>Statistics</h2>
-      <p>good: {good}</p>
-      <p>neutral: {neutral}</p>
-      <p>bad: {bad}</p>
+      <Statistics statName={"good"} statNumber={good} />
+      <Statistics statName={"neutral"} statNumber={neutral} />
+      <Statistics statName={"bad"} statNumber={bad} />
+      <Statistics statName={"all"} statNumber={all} />
+      <Statistics statName={"average"} statNumber={average} />
+      <Statistics statName={"positive"} statNumber={positive} />
     </div>
   );
 }
 
 const Button = ({ onClick, text }) => <button onClick={onClick}>{text}</button>;
+const Statistics = ({ statName, statNumber }) => {
+  if (statName === "positive" && statNumber === NaN + "%") {
+    return <p>{statName}: N/A</p>;
+  }
+
+  return (
+    <p>
+      {statName}: {statNumber}
+    </p>
+  );
+};
 
 export default App;
