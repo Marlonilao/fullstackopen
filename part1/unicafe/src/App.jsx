@@ -19,28 +19,48 @@ function App() {
       <Button onClick={handleGoodClick} text={"good"} />
       <Button onClick={handleNeutralClick} text={"neutral"} />
       <Button onClick={handleBadClick} text={"bad"} />
-      <h2>Statistics</h2>
-      <Statistics statName={"good"} statNumber={good} />
-      <Statistics statName={"neutral"} statNumber={neutral} />
-      <Statistics statName={"bad"} statNumber={bad} />
-      <Statistics statName={"all"} statNumber={all} />
-      <Statistics statName={"average"} statNumber={average} />
-      <Statistics statName={"positive"} statNumber={positive} />
+      <Statistics
+        good={good}
+        neutral={neutral}
+        bad={bad}
+        all={all}
+        average={average}
+        positive={positive}
+      />
     </div>
   );
 }
 
 const Button = ({ onClick, text }) => <button onClick={onClick}>{text}</button>;
-const Statistics = ({ statName, statNumber }) => {
-  if (statName === "positive" && statNumber === NaN + "%") {
-    return <p>{statName}: N/A</p>;
+
+const Statistics = (props) => {
+  const { good, neutral, bad, all, average, positive } = props;
+  if (good === 0 && neutral === 0 && bad === 0) {
+    return (
+      <div>
+        <h2>Statistics</h2>
+        <p>No feedback given</p>
+      </div>
+    );
   }
 
   return (
-    <p>
-      {statName}: {statNumber}
-    </p>
+    <div>
+      <h2>Statistics</h2>
+      <StatisticLine statName={"good"} statNumber={good} />
+      <StatisticLine statName={"neutral"} statNumber={neutral} />
+      <StatisticLine statName={"bad"} statNumber={bad} />
+      <StatisticLine statName={"all"} statNumber={all} />
+      <StatisticLine statName={"average"} statNumber={average} />
+      <StatisticLine statName={"positive"} statNumber={positive} />
+    </div>
   );
 };
+
+const StatisticLine = ({ statName, statNumber }) => (
+  <p>
+    {statName}: {statNumber}
+  </p>
+);
 
 export default App;
