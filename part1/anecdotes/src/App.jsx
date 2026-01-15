@@ -23,7 +23,7 @@ function App() {
     };
 
     const random = getRandomNumber(selected);
-    console.log(random);
+    console.log("random", random);
     setSelected(random);
   };
 
@@ -33,17 +33,49 @@ function App() {
     setVotes(copy);
   };
 
-  console.log(votes);
+  const maxIndex = votes.reduce(
+    (maxIdx, current, i, array) => (current > array[maxIdx] ? i : maxIdx),
+    0
+  );
+
+  console.log("votes array", votes);
+  console.log("maxIndex", maxIndex);
+  console.log("votes[maxIdx]", votes[maxIndex]);
+
   return (
     <>
+      <h2>Anecdote of the day</h2>
       <div>{anecdotes[selected]}</div>
       <div>has {votes[selected]} votes</div>
       <Button onClick={handleVoteClick} text={"vote"} />
       <Button onClick={handleNextAnecdoteClick} text={"Next anecdote"} />
+      <h2>Anecdote with most votes</h2>
+      <MostVotedAnecdote
+        anecdotes={anecdotes}
+        votes={votes}
+        maxIndex={maxIndex}
+      />
     </>
   );
 }
 
 const Button = ({ onClick, text }) => <button onClick={onClick}>{text}</button>;
+
+const MostVotedAnecdote = ({ anecdotes, votes, maxIndex }) => {
+  if (votes.every((vote) => vote === 0)) {
+    return (
+      <>
+        <p>No votes yet</p>
+      </>
+    );
+  }
+
+  return (
+    <>
+      <div>{anecdotes[maxIndex]}</div>
+      <div>has {votes[maxIndex]} votes</div>
+    </>
+  );
+};
 
 export default App;
