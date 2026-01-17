@@ -1,37 +1,44 @@
 import { useState } from "react";
 
-const Header = (props) => <h1>{props.course}</h1>;
+const Header = ({ name }) => <h1>{name}</h1>;
 
-const Content = (props) => {
+const Content = ({ parts }) => {
   return (
     <div>
-      {props.parts.map((part, i) => (
+      {parts.map((part, i) => (
         <Part key={i} name={part.name} exercises={part.exercises} />
       ))}
     </div>
   );
 };
 
-const Part = (props) => (
+const Part = ({ name, exercises }) => {
+  return (
+    <p>
+      {name} {exercises}
+    </p>
+  );
+};
+
+const Total = ({ parts }) => (
   <p>
-    {props.name} {props.exercises}
+    <b>
+      Total of{" "}
+      {parts.reduce(
+        (accumulator, currentValue) => accumulator + currentValue.exercises,
+        0
+      )}{" "}
+      exercises
+    </b>
   </p>
 );
-
-const Total = (props) => <p>Number of exercises {props.total}</p>;
 
 const Course = ({ course }) => {
   return (
     <div>
-      <Header course={course.name} />
+      <Header name={course.name} />
       <Content parts={course.parts} />
-      {/* <Total
-        total={
-          course.parts[0].exercises +
-          course.parts[1].exercises +
-          course.parts[2].exercises
-        }
-      /> */}
+      <Total parts={course.parts} />
     </div>
   );
 };
@@ -51,6 +58,10 @@ const App = () => {
       {
         name: "State of a component",
         exercises: 14,
+      },
+      {
+        name: "Redux",
+        exercises: 11,
       },
     ],
   };
