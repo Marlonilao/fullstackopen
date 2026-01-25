@@ -27,6 +27,41 @@ function App() {
 
   const addPerson = (e) => {
     e.preventDefault();
+    if (persons.some((person) => person.name === newName) && newNumber) {
+      if (
+        !confirm(
+          `${newName} is already added to phonebook, replace the old number with a new one?`,
+        )
+      )
+        return;
+
+      const person = persons.find((person) => person.name === newName);
+      const updatedPerson = {
+        ...person,
+        number: newNumber,
+      };
+
+      personService.update(person.id, updatedPerson).then((returnedPerson) => {
+        setPersons(
+          persons.map((person) =>
+            person.name === newName ? returnedPerson : person,
+          ),
+        );
+      });
+
+      // axios
+      //   .put(`http://localhost:3001/persons/${person.id}`, updatedPerson)
+      //   .then((response) => {
+      //     setPersons(
+      //       persons.map((person) =>
+      //         person.name === newName ? updatedPerson : person,
+      //       ),
+      //     );
+      //   });
+      resetInputs();
+      return;
+    }
+
     if (persons.some((person) => person.name === newName)) {
       alert(`${newName} is already added to phonebook`);
       resetInputs();
