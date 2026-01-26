@@ -3,21 +3,18 @@ import Filter from "./components/filter";
 import PersonForm from "./components/personForm";
 import Persons from "./components/persons";
 import personService from "./services/persons";
-import axios from "axios";
+import Notification from "./components/Notification";
+import "./index.css";
 
 function App() {
   const [persons, setPersons] = useState([]);
   const [newName, setNewName] = useState("");
   const [newNumber, setNewNumber] = useState("");
   const [filter, setFilter] = useState("");
+  const [successMessage, setSuccessMessage] = useState(null);
 
   useEffect(() => {
     personService.getAll().then((initialPersons) => setPersons(initialPersons));
-
-    // axios.get("http://localhost:3001/persons").then((response) => {
-    //   console.log("promise fulfilled");
-    //   setPersons(response.data);
-    // });
   }, []);
 
   const resetInputs = () => {
@@ -47,17 +44,9 @@ function App() {
             person.name === newName ? returnedPerson : person,
           ),
         );
+        setSuccessMessage(`Updated ${newName}'s number`);
+        setTimeout(() => setSuccessMessage(null), 5000);
       });
-
-      // axios
-      //   .put(`http://localhost:3001/persons/${person.id}`, updatedPerson)
-      //   .then((response) => {
-      //     setPersons(
-      //       persons.map((person) =>
-      //         person.name === newName ? updatedPerson : person,
-      //       ),
-      //     );
-      //   });
       resetInputs();
       return;
     }
@@ -73,9 +62,11 @@ function App() {
       number: newNumber,
     };
 
-    personService
-      .create(newPerson)
-      .then((returnedPerson) => setPersons(persons.concat(returnedPerson)));
+    personService.create(newPerson).then((returnedPerson) => {
+      setPersons(persons.concat(returnedPerson));
+      setSuccessMessage(`Added ${newPerson.name}`);
+      setTimeout(() => setSuccessMessage(null), 5000);
+    });
     resetInputs();
   };
 
@@ -99,6 +90,7 @@ function App() {
   return (
     <div>
       <h2>Phonebook</h2>
+      <Notification message={successMessage} />
       <Filter value={filter} onChange={handleFilterChange} />
       <h3>Add a new</h3>
       <PersonForm
