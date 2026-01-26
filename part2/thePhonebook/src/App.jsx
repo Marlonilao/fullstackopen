@@ -11,7 +11,7 @@ function App() {
   const [newName, setNewName] = useState("");
   const [newNumber, setNewNumber] = useState("");
   const [filter, setFilter] = useState("");
-  const [successMessage, setSuccessMessage] = useState(null);
+  const [message, setMessage] = useState(null);
 
   useEffect(() => {
     personService.getAll().then((initialPersons) => setPersons(initialPersons));
@@ -38,15 +38,27 @@ function App() {
         number: newNumber,
       };
 
-      personService.update(person.id, updatedPerson).then((returnedPerson) => {
-        setPersons(
-          persons.map((person) =>
-            person.name === newName ? returnedPerson : person,
-          ),
-        );
-        setSuccessMessage(`Updated ${newName}'s number`);
-        setTimeout(() => setSuccessMessage(null), 5000);
-      });
+      personService
+        .update(person.id, updatedPerson)
+        .then((returnedPerson) => {
+          setPersons(
+            persons.map((person) =>
+              person.name === newName ? returnedPerson : person,
+            ),
+          );
+          setMessage({
+            content: `Updated ${newName}'s number`,
+            isSuccess: true,
+          });
+          setTimeout(() => setMessage(null), 5000);
+        })
+        .catch((error) => {
+          setMessage({
+            content: `Information of ${newName} has already been removed from server`,
+            isSuccess: false,
+          });
+          setTimeout(() => setMessage(null), 5000);
+        });
       resetInputs();
       return;
     }
@@ -64,8 +76,11 @@ function App() {
 
     personService.create(newPerson).then((returnedPerson) => {
       setPersons(persons.concat(returnedPerson));
-      setSuccessMessage(`Added ${newPerson.name}`);
-      setTimeout(() => setSuccessMessage(null), 5000);
+      setMessage({
+        content: `Added ${newPerson.name}`,
+        isSuccess: true,
+      });
+      setTimeout(() => setMessage(null), 5000);
     });
     resetInputs();
   };
@@ -82,15 +97,20 @@ function App() {
   const handleDeletePerson = (id) => {
     const person = persons.find((person) => person.id === id);
     if (!confirm(`Delete ${person.name}?`)) return;
-    personService
-      .deleteData(id)
-      .then(() => setPersons(persons.filter((person) => person.id !== id)));
+    personService.deleteData(id).then(() => {
+      setPersons(persons.filter((person) => person.id !== id));
+      setMessage({
+        content: `${person.name}'s record has been deleted`,
+        isSuccess: true,
+      });
+      setTimeout(() => setMessage(null), 5000);
+    });
   };
 
   return (
     <div>
       <h2>Phonebook</h2>
-      <Notification message={successMessage} />
+      <Notification message={message} />
       <Filter value={filter} onChange={handleFilterChange} />
       <h3>Add a new</h3>
       <PersonForm

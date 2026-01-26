@@ -1,6 +1,8 @@
 const Notification = ({ message }) => {
   return message === null ? null : (
-    <div className="successMessage">{message}</div>
+    <div className={message.isSuccess ? "successMessage" : "errorMessage"}>
+      {message.content}
+    </div>
   );
 };
 
