@@ -1,6 +1,7 @@
 import { useState, useEffect } from "react";
 import axios from "axios";
 import Country from "./components/Country";
+import CountryListItem from "./components/CountryListItem";
 
 function App() {
   const [value, setValue] = useState("");
@@ -39,7 +40,19 @@ function App() {
           <p>Too many matches, specify another filter</p>
         ) : countriesToShow.length > 1 ? (
           countriesToShow.map((country) => (
-            <p key={country.name.common}>{country.name.common}</p>
+            // <p key={country.name.common}>{country.name.common}</p>
+            <CountryListItem
+              name={country.name.common}
+              children={
+                <Country
+                  name={country.name.common}
+                  capital={country.capital[0]}
+                  area={country.area}
+                  languages={country.languages}
+                  flags={country.flags}
+                />
+              }
+            />
           ))
         ) : (
           <Country
