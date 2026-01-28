@@ -1,3 +1,5 @@
+import WeatherReport from "./WeatherReport";
+
 const Country = (props) => {
   const languagesArray = [];
 
@@ -16,6 +18,7 @@ const Country = (props) => {
         </ul>
       </div>
       <img alt={props.flags.alt} src={props.flags.png} />
+      <WeatherReport location={props.capital} />
     </div>
   );
 };

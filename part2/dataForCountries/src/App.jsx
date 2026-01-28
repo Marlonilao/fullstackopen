@@ -42,6 +42,7 @@ function App() {
           countriesToShow.map((country) => (
             // <p key={country.name.common}>{country.name.common}</p>
             <CountryListItem
+              key={country.name.common}
               name={country.name.common}
               children={
                 <Country
