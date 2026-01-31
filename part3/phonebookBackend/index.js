@@ -1,5 +1,9 @@
 const express = require("express");
 const app = express();
+const morgan = require("morgan");
+
+app.use(express.json());
+app.use(morgan("tiny"));
 
 let persons = [
   {
@@ -55,8 +59,6 @@ app.delete("/api/persons/:id", (request, response) => {
 
   response.status(204).end();
 });
-
-app.use(express.json());
 
 app.post("/api/persons", (request, response) => {
   const body = request.body;
