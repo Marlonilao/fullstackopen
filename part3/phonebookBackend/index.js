@@ -48,14 +48,6 @@ app.get("/api/persons/:id", (request, response) => {
   Person.findById(request.params.id).then((person) => {
     response.json(person);
   });
-  //   const id = request.params.id;
-  //   const person = persons.find((person) => person.id === id);
-
-  //   if (person) {
-  //     response.json(person);
-  //   } else {
-  //     response.status(404).end();
-  //   }
 });
 
 app.delete("/api/persons/:id", (request, response, next) => {
@@ -98,6 +90,22 @@ app.post("/api/persons", (request, response) => {
     response.json(savedPerson);
     console.log(savedPerson);
   });
+});
+
+app.put("/api/persons/:id", (request, response, next) => {
+  Person.findById(request.params.id)
+    .then((person) => {
+      if (!person) {
+        return response.status(404).end();
+      }
+
+      person.number = request.body.number;
+
+      return person.save().then((updatedPerson) => {
+        response.json(updatedPerson);
+      });
+    })
+    .catch((error) => next(error));
 });
 
 const unknownEndpoint = (request, response) => {

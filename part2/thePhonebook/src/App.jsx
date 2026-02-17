@@ -63,11 +63,11 @@ function App() {
       return;
     }
 
-    if (persons.some((person) => person.name === newName)) {
-      alert(`${newName} is already added to phonebook`);
-      resetInputs();
-      return;
-    }
+    // if (persons.some((person) => person.name === newName)) {
+    //   alert(`${newName} is already added to phonebook`);
+    //   resetInputs();
+    //   return;
+    // }
 
     const newPerson = {
       name: newName,

@@ -1,0 +1,7 @@
+PUT http://localhost:3001/api/persons/699269f7dae42d9321192b0d
+Content-Type: application/json
+
+{
+    "name":"Ensure that everything still works",
+    "number": "111222333"
+}

@@ -8,11 +8,17 @@ const PersonForm = ({
   return (
     <form onSubmit={onSubmit}>
       <div>
-        name: <input type="text" value={newName} onChange={onChangeName} />
+        name:{" "}
+        <input type="text" value={newName} onChange={onChangeName} required />
       </div>
       <div>
         number:{" "}
-        <input type="text" value={newNumber} onChange={onChangeNumber} />
+        <input
+          type="text"
+          value={newNumber}
+          onChange={onChangeNumber}
+          required
+        />
       </div>
       <div>
         <button type="submit">add</button>
