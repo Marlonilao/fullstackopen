@@ -74,14 +74,23 @@ function App() {
       number: newNumber,
     };
 
-    personService.create(newPerson).then((returnedPerson) => {
-      setPersons(persons.concat(returnedPerson));
-      setMessage({
-        content: `Added ${newPerson.name}`,
-        isSuccess: true,
+    personService
+      .create(newPerson)
+      .then((returnedPerson) => {
+        setPersons(persons.concat(returnedPerson));
+        setMessage({
+          content: `Added ${newPerson.name}`,
+          isSuccess: true,
+        });
+        setTimeout(() => setMessage(null), 5000);
+      })
+      .catch((error) => {
+        setMessage({
+          content: error.response.data.error,
+          isSuccess: false,
+        });
+        setTimeout(() => setMessage(null), 5000);
       });
-      setTimeout(() => setMessage(null), 5000);
-    });
     resetInputs();
   };
 
