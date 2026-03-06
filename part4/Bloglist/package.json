@@ -4,8 +4,8 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "test": "node --test",
-    "dev": "node --watch index.js"
+    "test": "NODE_ENV=test node --test",
+    "dev": "NODE_ENV=development node --watch index.js"
   },
   "author": "",
   "license": "ISC",
@@ -17,6 +17,7 @@
     "@eslint/js": "^10.0.1",
     "dotenv": "^17.3.1",
     "eslint": "^10.0.2",
-    "globals": "^17.3.0"
+    "globals": "^17.3.0",
+    "supertest": "^7.2.2"
   }
 }
