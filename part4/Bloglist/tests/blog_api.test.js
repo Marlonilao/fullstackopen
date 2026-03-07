@@ -22,6 +22,14 @@ test('blog list application returns the correct amount of blog posts in the JSON
     })
 })
 
+test('unique identifier property of the blog posts is named id', async () => {
+  const blogs = await helper.blogsInDb()
+
+  blogs.forEach((blog) => {
+    assert.strictEqual(Object.hasOwn(blog, 'id'), true)
+  })
+})
+
 after(async () => {
   await mongoose.connection.close()
 })
