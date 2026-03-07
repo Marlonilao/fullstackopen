@@ -56,6 +56,21 @@ test('making an HTTP POST request to the /api/blogs URL successfully creates a n
   assert(titles.includes('Blog 3'))
 })
 
+test('if the likes property is missing from the request, it will default to the value 0', async () => {
+  const newBlog = {
+    title: 'Blog 3',
+    author: 'Author for blog 3',
+    url: 'blog3.com',
+  }
+
+  await api.post('/api/blogs').send(newBlog)
+
+  const blogToBeTested = await Blog.findOne({ title: 'Blog 3' })
+
+  // console.log('blogToBeTested', blogToBeTested)
+  assert.strictEqual(blogToBeTested.likes, 0)
+})
+
 after(async () => {
   await mongoose.connection.close()
 })
