@@ -1,4 +1,4 @@
-const { test, after, beforeEach } = require('node:test')
+const { test, after, beforeEach, describe } = require('node:test')
 const mongoose = require('mongoose')
 const supertest = require('supertest')
 const app = require('../app')
@@ -69,6 +69,28 @@ test('if the likes property is missing from the request, it will default to the 
 
   // console.log('blogToBeTested', blogToBeTested)
   assert.strictEqual(blogToBeTested.likes, 0)
+})
+
+describe('returns 400 if title or url is missing', () => {
+  test('returns 400 if title is missing', async () => {
+    const newBlog = {
+      author: 'Author',
+      url: 'url',
+      likes: 0,
+    }
+
+    await api.post('/api/blogs').send(newBlog).expect(400)
+  })
+
+  test('returns 400 if url is missing', async () => {
+    const newBlog = {
+      title: 'title',
+      author: 'author',
+      likes: 0,
+    }
+
+    await api.post('/api/blogs').send(newBlog).expect(400)
+  })
 })
 
 after(async () => {
