@@ -107,6 +107,28 @@ test('deleting a single blog post resource', async () => {
   assert(!titles.includes(blogToBeDeletedTitle))
 })
 
+describe('updating the information of an individual blog post', () => {
+  test('updates the likes of an existing blog post', async () => {
+    const blogsAtStart = await helper.blogsInDb()
+    const blogToUpdate = blogsAtStart[0]
+    const initialLikes = blogToUpdate.likes
+
+    const addLikes = { likes: 100 }
+
+    await api.put(`/api/blogs/${blogToUpdate.id}`).send(addLikes)
+
+    const blogsAtEnd = await helper.blogsInDb()
+    const blogToTest = blogsAtEnd[0]
+
+    assert.strictEqual(blogToTest.likes, initialLikes + addLikes.likes)
+  })
+
+  test('returns 404 if blog is not found', async () => {
+    const validNonExistingId = await helper.nonExistingId()
+    await api.put(`/api/blogs/${validNonExistingId}`).expect(404)
+  })
+})
+
 after(async () => {
   await mongoose.connection.close()
 })
