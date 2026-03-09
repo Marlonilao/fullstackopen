@@ -9,7 +9,7 @@ const initialBlogs = [
   },
   {
     title: 'Blog 2',
-    authro: 'Author for blog 2',
+    author: 'Author for blog 2',
     url: 'blog2.com',
     likes: 200,
   },
@@ -20,4 +20,18 @@ const blogsInDb = async () => {
   return blogs.map((blog) => blog.toJSON())
 }
 
-module.exports = { initialBlogs, blogsInDb }
+const nonExistingId = async () => {
+  const blog = new Blog({
+    title: 'willremovesoon',
+    author: 'willremovesoon',
+    url: 'willremovesoon',
+    likes: 0,
+  })
+
+  await blog.save()
+  await blog.deleteOne()
+
+  return blog._id.toString()
+}
+
+module.exports = { initialBlogs, blogsInDb, nonExistingId }

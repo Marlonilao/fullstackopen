@@ -93,6 +93,20 @@ describe('returns 400 if title or url is missing', () => {
   })
 })
 
+test('deleting a single blog post resource', async () => {
+  const blogsAtStart = await helper.blogsInDb()
+  const blogToBeDeleted = blogsAtStart[0]
+  const blogToBeDeletedTitle = blogsAtStart[0].title
+
+  await Blog.findByIdAndDelete(blogToBeDeleted.id)
+
+  const blogsAtEnd = await helper.blogsInDb()
+  assert.strictEqual(blogsAtEnd.length, blogsAtStart.length - 1)
+
+  const titles = blogsAtEnd.map((blog) => blog.title)
+  assert(!titles.includes(blogToBeDeletedTitle))
+})
+
 after(async () => {
   await mongoose.connection.close()
 })
