@@ -1,11 +1,23 @@
-const { test, after, beforeEach, describe } = require('node:test')
+const { test, after, beforeEach, describe, before } = require('node:test')
 const mongoose = require('mongoose')
 const supertest = require('supertest')
 const app = require('../app')
 const helper = require('./blog_helper')
 const Blog = require('../models/blog')
+const User = require('../models/user')
 const assert = require('node:assert')
 const api = supertest(app)
+
+before(async () => {
+  await User.deleteMany({})
+
+  const userInfo = {
+    username: 'practiceUserName',
+    name: 'practiceName',
+    password: 'practicePassword',
+  }
+  await api.post('/api/users').send(userInfo)
+})
 
 beforeEach(async () => {
   await Blog.deleteMany({})
@@ -31,6 +43,19 @@ test('unique identifier property of the blog posts is named id', async () => {
 })
 
 test('making an HTTP POST request to the /api/blogs URL successfully creates a new blog post', async () => {
+  const accountDetails = {
+    username: 'practiceUserName',
+    password: 'practicePassword',
+  }
+
+  // const accountDetailsToJson = JSON.stringify(accountDetails)
+
+  const login = await api.post('/api/login').send(accountDetails)
+
+  // console.log('login.body', login.body)
+
+  const token = login.body.token
+
   const newBlog = {
     title: 'Blog 3',
     author: 'Author for blog 3',
@@ -40,6 +65,7 @@ test('making an HTTP POST request to the /api/blogs URL successfully creates a n
 
   await api
     .post('/api/blogs')
+    .set('Authorization', `Bearer ${token}`)
     .send(newBlog)
     .expect(201)
     .expect('Content-Type', 'application/json; charset=utf-8')
@@ -57,13 +83,29 @@ test('making an HTTP POST request to the /api/blogs URL successfully creates a n
 })
 
 test('if the likes property is missing from the request, it will default to the value 0', async () => {
+  const accountDetails = {
+    username: 'practiceUserName',
+    password: 'practicePassword',
+  }
+
+  // const accountDetailsToJson = JSON.stringify(accountDetails)
+
+  const login = await api.post('/api/login').send(accountDetails)
+
+  // console.log('login.body', login.body)
+
+  const token = login.body.token
+
   const newBlog = {
     title: 'Blog 3',
     author: 'Author for blog 3',
     url: 'blog3.com',
   }
 
-  await api.post('/api/blogs').send(newBlog)
+  await api
+    .post('/api/blogs')
+    .send(newBlog)
+    .set('Authorization', `Bearer ${token}`)
 
   const blogToBeTested = await Blog.findOne({ title: 'Blog 3' })
 

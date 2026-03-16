@@ -1,9 +1,9 @@
 POST http://localhost:3003/api/blogs
 Content-Type: application/json
-Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6InByYWN0aWNlVXNlck5hbWUiLCJpZCI6IjY5YjM2Y2ZmNWIxMzEzODA3M2U5MDFjNyIsImlhdCI6MTc3MzYzMDYwOH0.hbQ882sBosg-QrCXAqZTcz7Hzv9-os1xYvjFPpNA4Bo
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6InByYWN0aWNlVXNlck5hbWUiLCJpZCI6IjY5YjM2Y2ZmNWIxMzEzODA3M2U5MDFjNyIsImlhdCI6MTc3MzY1MjQxMX0.8AItpo0cePNCfvRUdX2uwtQoDb_YeW2TSWMPD_cU9_c
 
 {
-    "title": "teDelete",
+    "title": "toDelete",
     "author": "test3",
     "url": "test3",
     "likes": 1
