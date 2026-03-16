@@ -82,6 +82,19 @@ test('making an HTTP POST request to the /api/blogs URL successfully creates a n
   assert(titles.includes('Blog 3'))
 })
 
+test('adding a blog fails if a token is not provided', async () => {
+  const newBlog = {
+    title: 'asdasdasd',
+    author: 'Aasdasd',
+    url: 'asdasddd',
+    likes: 300,
+  }
+
+  const response = await api.post('/api/blogs').send(newBlog).expect(401)
+
+  assert.strictEqual(response.body.error, 'token missing')
+})
+
 test('if the likes property is missing from the request, it will default to the value 0', async () => {
   const accountDetails = {
     username: 'practiceUserName',

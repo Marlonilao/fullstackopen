@@ -18,17 +18,24 @@ blogRouter.get('/', async (request, response) => {
 
 blogRouter.post('/', async (request, response) => {
   const body = request.body
-  // const decodedToken = jwt.verify(request.token, process.env.SECRET)
-  // if (!decodedToken.id) {
-  //   return response.status(401).json({ error: 'token invalid' })
-  // }
+
+  if (!body.title || !body.url) {
+    return response.status(400).json({ error: 'title or url missing' })
+  }
+
+  if (!request.token) {
+    return response.status(401).json({ error: 'token missing' })
+  }
+
+  const decodedToken = jwt.verify(request.token, process.env.SECRET)
+  if (!decodedToken.id) {
+    return response.status(401).json({ error: 'token invalid' })
+  }
 
   const user = request.user
 
   if (!user) {
     return response.status(400).json({ error: 'userId missing or not valid' })
-  } else if (!body.title || !body.url) {
-    return response.status(400).json({ error: 'title or url missing' })
   } else {
     const blog = new Blog({
       title: body.title,
