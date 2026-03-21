@@ -1,9 +1,10 @@
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useRef } from 'react'
 import Blog from './components/Blog'
 import LoginForm from './components/Login'
 import CreateNew from './components/CreateNew'
 import blogService from './services/blogs'
 import loginService from './services/login'
+import Togglable from './components/Togglable'
 import Notification from './components/Notification'
 import './index.css'
 
@@ -12,9 +13,6 @@ const App = () => {
   const [username, setUsername] = useState('')
   const [password, setPassword] = useState('')
   const [user, setUser] = useState(null)
-  const [title, setTitle] = useState('')
-  const [author, setAuthor] = useState('')
-  const [url, setUrl] = useState('')
   const [message, setMessage] = useState(null)
 
   useEffect(() => {
@@ -57,19 +55,13 @@ const App = () => {
     blogService.setToken(null)
   }
 
-  const handleTitleChange = ({ target }) => setTitle(target.value)
-  const handleAuthorChange = ({ target }) => setAuthor(target.value)
-  const handleUrlChange = ({ target }) => setUrl(target.value)
+  const createNewRef = useRef()
 
-  const handleCreateNew = async (e) => {
-    e.preventDefault()
-
-    const response = await blogService.create({ title, author, url })
+  const handleCreateNew = async (blogInfo) => {
+    createNewRef.current.toggleVisible()
+    const response = await blogService.create(blogInfo)
 
     setBlogs(blogs.concat(response))
-    setTitle('')
-    setAuthor('')
-    setUrl('')
     setMessage({
       content: `a new blog ${response.title} by ${response.author}`,
       isSuccess: true,
@@ -106,15 +98,10 @@ const App = () => {
               logout
             </button>
           </p>
-          <CreateNew
-            title={title}
-            author={author}
-            url={url}
-            handleAuthorChange={handleAuthorChange}
-            handleTitleChange={handleTitleChange}
-            handleUrlChange={handleUrlChange}
-            handleCreateNew={handleCreateNew}
-          />
+          <Togglable buttonLabel='create new blog' ref={createNewRef}>
+            <CreateNew handleCreateNew={handleCreateNew} />
+          </Togglable>
+
           <ol>
             {blogs.map((blog) => (
               <Blog key={blog.id} blog={blog} />

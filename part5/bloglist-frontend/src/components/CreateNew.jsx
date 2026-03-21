@@ -1,43 +1,54 @@
-import Togglable from './Togglable'
+import { useState } from 'react'
 
 const CreateNew = (props) => {
+  const [title, setTitle] = useState('')
+  const [author, setAuthor] = useState('')
+  const [url, setUrl] = useState('')
+
+  const handleSubmit = async (e) => {
+    e.preventDefault()
+
+    await props.handleCreateNew({ title, author, url })
+    setTitle('')
+    setAuthor('')
+    setUrl('')
+  }
+
   return (
-    <Togglable buttonLabel='create new blog'>
-      <form onSubmit={props.handleCreateNew}>
-        <h2>Create New</h2>
-        <div>
-          <label>
-            title:{' '}
-            <input
-              type='text'
-              value={props.title}
-              onChange={props.handleTitleChange}
-            />
-          </label>
-        </div>
-        <div>
-          <label>
-            author:{' '}
-            <input
-              type='text'
-              value={props.author}
-              onChange={props.handleAuthorChange}
-            />
-          </label>
-        </div>
-        <div>
-          <label>
-            url:{' '}
-            <input
-              type='text'
-              value={props.url}
-              onChange={props.handleUrlChange}
-            />
-          </label>
-        </div>
-        <button type='submit'>Create</button>
-      </form>
-    </Togglable>
+    <form onSubmit={handleSubmit}>
+      <h2>Create New</h2>
+      <div>
+        <label>
+          title:{' '}
+          <input
+            type='text'
+            value={title}
+            onChange={(e) => setTitle(e.target.value)}
+          />
+        </label>
+      </div>
+      <div>
+        <label>
+          author:{' '}
+          <input
+            type='text'
+            value={author}
+            onChange={(e) => setAuthor(e.target.value)}
+          />
+        </label>
+      </div>
+      <div>
+        <label>
+          url:{' '}
+          <input
+            type='text'
+            value={url}
+            onChange={(e) => setUrl(e.target.value)}
+          />
+        </label>
+      </div>
+      <button type='submit'>Create</button>
+    </form>
   )
 }
 
