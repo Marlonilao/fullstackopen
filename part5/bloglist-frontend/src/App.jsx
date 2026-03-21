@@ -15,8 +15,16 @@ const App = () => {
   const [user, setUser] = useState(null)
   const [message, setMessage] = useState(null)
 
+  // useEffect(() => {
+  //   blogService.getAll().then((blogs) => setBlogs(blogs))
+  // }, [])
+
   useEffect(() => {
-    blogService.getAll().then((blogs) => setBlogs(blogs))
+    const fetchData = async () => {
+      const blogs = await blogService.getAll()
+      setBlogs(blogs)
+    }
+    fetchData()
   }, [])
 
   useEffect(() => {
@@ -71,6 +79,13 @@ const App = () => {
     }, 5000)
   }
 
+  const handleLike = async (id, newLike) => {
+    const response = await blogService.update(id, newLike)
+    setBlogs(blogs.map((blog) => (blog.id === id ? response : blog)))
+    // setBlogs(await blogService.getAll())
+    // // const blogs = await blogService.getAll()
+  }
+
   return (
     <div>
       <Notification message={message} />
@@ -101,12 +116,11 @@ const App = () => {
           <Togglable buttonLabel='create new blog' ref={createNewRef}>
             <CreateNew handleCreateNew={handleCreateNew} />
           </Togglable>
-
-          <ol>
+          <div>
             {blogs.map((blog) => (
-              <Blog key={blog.id} blog={blog} />
+              <Blog key={blog.id} blog={blog} handleLike={handleLike} />
             ))}
-          </ol>
+          </div>
         </div>
       )}
     </div>

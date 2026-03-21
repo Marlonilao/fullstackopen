@@ -168,14 +168,14 @@ describe('updating the information of an individual blog post', () => {
     const blogToUpdate = blogsAtStart[0]
     const initialLikes = blogToUpdate.likes
 
-    const addLikes = { likes: 100 }
-
-    await api.put(`/api/blogs/${blogToUpdate.id}`).send(addLikes)
+    await api
+      .put(`/api/blogs/${blogToUpdate.id}`)
+      .send({ ...blogToUpdate, likes: blogToUpdate.likes + 1 })
 
     const blogsAtEnd = await helper.blogsInDb()
     const blogToTest = blogsAtEnd[0]
 
-    assert.strictEqual(blogToTest.likes, initialLikes + addLikes.likes)
+    assert.strictEqual(blogToTest.likes, initialLikes + 1)
   })
 
   test('returns 404 if blog is not found', async () => {
