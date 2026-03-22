@@ -82,9 +82,9 @@ const App = () => {
   const handleLike = async (id, newLike) => {
     const response = await blogService.update(id, newLike)
     setBlogs(blogs.map((blog) => (blog.id === id ? response : blog)))
-    // setBlogs(await blogService.getAll())
-    // // const blogs = await blogService.getAll()
   }
+
+  const sortedBlogs = [...blogs].sort((a, b) => b.likes - a.likes)
 
   return (
     <div>
@@ -117,7 +117,7 @@ const App = () => {
             <CreateNew handleCreateNew={handleCreateNew} />
           </Togglable>
           <div>
-            {blogs.map((blog) => (
+            {sortedBlogs.map((blog) => (
               <Blog key={blog.id} blog={blog} handleLike={handleLike} />
             ))}
           </div>
