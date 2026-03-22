@@ -1,6 +1,6 @@
 import { useState } from 'react'
 
-const Blog = ({ blog, handleLike }) => {
+const Blog = ({ blog, handleLike, handleDelete, user }) => {
   const [isExpanded, setIsExpanded] = useState(false)
 
   const blogStyle = {
@@ -33,6 +33,21 @@ const Blog = ({ blog, handleLike }) => {
             </button>
           </p>
           <p>Author: {blog.author}</p>
+          {user.username === blog.user.username ? (
+            <div>
+              <button
+                type='button'
+                style={{
+                  backgroundColor: 'lightblue',
+                  borderRadius: '20%',
+                  border: '0',
+                }}
+                onClick={() => handleDelete(blog.id, blog.title, blog.author)}
+              >
+                remove
+              </button>
+            </div>
+          ) : null}
         </>
       ) : (
         <>
