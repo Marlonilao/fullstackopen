@@ -46,3 +46,31 @@ test("blog's URL and number of likes are shown when the button controlling the s
   expect(url).toBeInTheDocument()
   expect(likes).toBeInTheDocument()
 })
+
+test('calls event handler twice when like button is clicked twice', async () => {
+  const blog = {
+    title: 'blog title',
+    author: 'blog author',
+    url: 'blog url',
+    likes: 1,
+    user: { username: 'asd', name: 'asd' },
+  }
+
+  const userObject = { username: 'asd', name: 'asd' }
+
+  const mockHandler = vi.fn()
+
+  render(<Blog blog={blog} user={userObject} handleLike={mockHandler} />)
+
+  const user = userEvent.setup()
+  const viewButton = screen.getByText('View')
+
+  await user.click(viewButton)
+
+  const likeButton = screen.getByText('like')
+
+  await user.click(likeButton)
+  await user.click(likeButton)
+
+  expect(mockHandler.mock.calls).toHaveLength(2)
+})
