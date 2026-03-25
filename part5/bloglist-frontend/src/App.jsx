@@ -95,12 +95,6 @@ const App = () => {
 
   const sortedBlogs = [...blogs].sort((a, b) => b.likes - a.likes)
 
-  // console.log(
-  //   'blog.user.username',
-  //   blogs.map((blog) => blog.user.username),
-  // )
-  // console.log('user.username', user.username)
-
   return (
     <div>
       <Notification message={message} />

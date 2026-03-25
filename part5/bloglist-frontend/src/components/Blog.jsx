@@ -14,13 +14,13 @@ const Blog = ({ blog, handleLike, handleDelete, user }) => {
   return (
     <div style={blogStyle}>
       {isExpanded ? (
-        <>
-          <p>
+        <div>
+          <p className='title'>
             Title: {blog.title}{' '}
             <button onClick={() => setIsExpanded(!isExpanded)}>hide</button>
           </p>
-          <p>Url: {blog.url}</p>
-          <p>
+          <p className='url'>Url: {blog.url}</p>
+          <p className='likes'>
             Likes: {blog.likes}{' '}
             <button
               onClick={() =>
@@ -32,7 +32,7 @@ const Blog = ({ blog, handleLike, handleDelete, user }) => {
               like
             </button>
           </p>
-          <p>Author: {blog.author}</p>
+          <p className='author'>Author: {blog.author}</p>
           {user.username === blog.user.username ? (
             <div>
               <button
@@ -48,12 +48,12 @@ const Blog = ({ blog, handleLike, handleDelete, user }) => {
               </button>
             </div>
           ) : null}
-        </>
+        </div>
       ) : (
-        <>
+        <div>
           Title: {blog.title} / Author: {blog.author}{' '}
           <button onClick={() => setIsExpanded(!isExpanded)}>View</button>
-        </>
+        </div>
       )}
     </div>
   )
