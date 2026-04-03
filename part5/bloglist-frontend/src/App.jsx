@@ -125,7 +125,7 @@ const App = () => {
           <Togglable buttonLabel='create new blog' ref={createNewRef}>
             <CreateNew handleCreateNew={handleCreateNew} />
           </Togglable>
-          <div>
+          <div id='blogList'>
             {sortedBlogs.map((blog) => (
               <Blog
                 key={blog.id}
