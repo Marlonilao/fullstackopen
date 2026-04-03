@@ -1,5 +1,6 @@
 const { test, expect, beforeEach, describe } = require('@playwright/test')
 const { loginWith, createBlog } = require('./helper')
+const { log } = require('node:console')
 
 describe('Blog app', () => {
   beforeEach(async ({ page, request }) => {
@@ -84,6 +85,40 @@ describe('Blog app', () => {
         .click()
 
       await expect(page.locator('#blogList > *')).toHaveCount(0)
+    })
+  })
+
+  describe('with multiple users and blogs', () => {
+    beforeEach(async ({ page, request }) => {
+      await request.post('http://localhost:3003/api/users', {
+        data: {
+          name: 'Test User 02',
+          username: 'testUser02',
+          password: 'test1234',
+        },
+      })
+    })
+
+    test.only("only the user who added the blog sees the blog's delete button", async ({
+      page,
+    }) => {
+      // User 01 creates a blog and should see the delete button for that blog
+      await loginWith(page, 'testUser01', 'test1234')
+      await page.getByRole('button', { name: 'create new blog' }).click()
+      await createBlog(page, 'test blog 1', 'Test User 01', 'testblog1.com')
+      const blogItem = page.locator('#blogList > :first-child')
+      await blogItem.getByRole('button', { name: 'View' }).click()
+      await expect(
+        blogItem.getByRole('button', { name: 'remove' }),
+      ).toBeVisible()
+
+      // User 02 logs in and should not see the delete button for the blog created by User 01
+      await page.getByRole('button', { name: 'Logout' }).click()
+      await loginWith(page, 'testUser02', 'test1234')
+      await blogItem.getByRole('button', { name: 'View' }).click()
+      await expect(
+        blogItem.getByRole('button', { name: 'remove' }),
+      ).not.toBeVisible()
     })
   })
 })
