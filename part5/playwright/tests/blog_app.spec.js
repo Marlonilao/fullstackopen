@@ -33,7 +33,7 @@ describe('Blog app', () => {
       await loginWith(page, 'testUser01', 'wrongpassword')
 
       await expect(page.getByText('Wrong username or password')).toBeVisible()
-      await expect(page.getByText('Test User 01 logged in')).toHaveCount(0)
+      await expect(page.getByText('Test User 01 logged in')).not.toBeVisible()
     })
   })
 
@@ -49,18 +49,41 @@ describe('Blog app', () => {
       await expect(
         page.getByText('Title: test blog 1 / Author: Test User 01'),
       ).toBeVisible()
-      await expect(page.locator('#blogList')).toHaveCount(1)
+      await expect(page.locator('#blogList > *')).toHaveCount(1)
     })
 
     test('a blog can be liked', async ({ page }) => {
       await page.getByRole('button', { name: 'create new blog' }).click()
       await createBlog(page, 'test blog 1', 'Test User 01', 'testblog1.com')
 
+      // const blog = page.getByText('Title: test blog 1 / Author: Test User 01')
+      // await blog.getByRole('button', { name: 'View' }).click()
+      // const likes = page.getByText('Likes: 0')
+      // await likes.getByRole('button', { name: 'like' }).click()
+
+      const blogItem = page.locator('#blogList > :first-child')
+      await blogItem.getByRole('button', { name: 'View' }).click()
+      await blogItem.getByRole('button', { name: 'like' }).click()
+      await expect(blogItem.getByText('Likes: 1')).toBeVisible()
+    })
+
+    test('a blog can be deleted by the user who created it', async ({
+      page,
+    }) => {
+      await page.getByRole('button', { name: 'create new blog' }).click()
+      await createBlog(page, 'test blog 1', 'Test User 01', 'testblog1.com')
+
       const blog = page.getByText('Title: test blog 1 / Author: Test User 01')
       await blog.getByRole('button', { name: 'View' }).click()
-      const likes = page.getByText('Likes: 0')
-      await likes.getByRole('button', { name: 'like' }).click()
-      await expect(page.getByText('Likes: 1')).toBeVisible()
+      await page.once('dialog', async (dialog) => {
+        await dialog.accept()
+      })
+      await page
+        .locator('#blogList > :first-child')
+        .getByRole('button', { name: 'remove' })
+        .click()
+
+      await expect(page.locator('#blogList > *')).toHaveCount(0)
     })
   })
 })
