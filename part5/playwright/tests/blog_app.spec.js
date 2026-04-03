@@ -99,7 +99,7 @@ describe('Blog app', () => {
       })
     })
 
-    test.only("only the user who added the blog sees the blog's delete button", async ({
+    test("only the user who added the blog sees the blog's delete button", async ({
       page,
     }) => {
       // User 01 creates a blog and should see the delete button for that blog
@@ -113,12 +113,52 @@ describe('Blog app', () => {
       ).toBeVisible()
 
       // User 02 logs in and should not see the delete button for the blog created by User 01
-      await page.getByRole('button', { name: 'Logout' }).click()
+      await page.getByRole('button', { name: 'logout' }).click()
       await loginWith(page, 'testUser02', 'test1234')
       await blogItem.getByRole('button', { name: 'View' }).click()
       await expect(
         blogItem.getByRole('button', { name: 'remove' }),
       ).not.toBeVisible()
+    })
+
+    test('blogs are arranged in the order according to the likes, the blog with the most likes first', async ({
+      page,
+    }) => {
+      // User 01 creates two blogs
+      await loginWith(page, 'testUser01', 'test1234')
+      await page.getByRole('button', { name: 'create new blog' }).click()
+      await createBlog(page, 'test blog 1', 'Test User 01', 'testblog1.com')
+      await page.getByRole('button', { name: 'create new blog' }).click()
+      await createBlog(page, 'test blog 2', 'Test User 01', 'testblog2.com')
+
+      // User 02 logs in and likes the second blog twice and the first blog once
+      await page.getByRole('button', { name: 'logout' }).click()
+      await loginWith(page, 'testUser02', 'test1234')
+
+      const firstBlogItem = page
+        .locator('#blogList > *')
+        .filter({ hasText: 'test blog 1' })
+      const secondBlogItem = page
+        .locator('#blogList > *')
+        .filter({ hasText: 'test blog 2' })
+
+      await secondBlogItem.getByRole('button', { name: 'View' }).click()
+      await secondBlogItem.getByRole('button', { name: 'like' }).click()
+      await expect(secondBlogItem).toContainText('Likes: 1')
+      await secondBlogItem.getByRole('button', { name: 'like' }).click()
+      await expect(secondBlogItem).toContainText('Likes: 2')
+
+      await firstBlogItem.getByRole('button', { name: 'View' }).click()
+      await firstBlogItem.getByRole('button', { name: 'like' }).click()
+      await expect(firstBlogItem).toContainText('Likes: 1')
+
+      // The second blog should now be the first in the list and the first blog should be the second
+      await expect(page.locator('#blogList > :first-child')).toContainText(
+        'test blog 2',
+      )
+      await expect(page.locator('#blogList > :nth-child(2)')).toContainText(
+        'test blog 1',
+      )
     })
   })
 })
