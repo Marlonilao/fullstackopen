@@ -6,7 +6,7 @@
   "scripts": {
     "test": "NODE_ENV=test node --test",
     "dev": "NODE_ENV=development node --watch index.js",
-    "start:test": "NOTE_ENV=test node --watch index.js"
+    "start:test": "NODE_ENV=test node --watch index.js"
   },
   "author": "",
   "license": "ISC",

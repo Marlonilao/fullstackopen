@@ -51,5 +51,16 @@ describe('Blog app', () => {
       ).toBeVisible()
       await expect(page.locator('#blogList')).toHaveCount(1)
     })
+
+    test('a blog can be liked', async ({ page }) => {
+      await page.getByRole('button', { name: 'create new blog' }).click()
+      await createBlog(page, 'test blog 1', 'Test User 01', 'testblog1.com')
+
+      const blog = page.getByText('Title: test blog 1 / Author: Test User 01')
+      await blog.getByRole('button', { name: 'View' }).click()
+      const likes = page.getByText('Likes: 0')
+      await likes.getByRole('button', { name: 'like' }).click()
+      await expect(page.getByText('Likes: 1')).toBeVisible()
+    })
   })
 })
