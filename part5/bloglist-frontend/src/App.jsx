@@ -1,5 +1,4 @@
 import { useState, useEffect, useRef } from 'react'
-import Blog from './components/Blog'
 import LoginForm from './components/Login'
 import CreateNew from './components/CreateNew'
 import blogService from './services/blogs'
@@ -8,6 +7,7 @@ import Togglable from './components/Togglable'
 import Notification from './components/Notification'
 import './index.css'
 import { BrowserRouter as Router, Routes, Route, Link } from 'react-router-dom'
+import SingleBlog from './components/SingleBlog'
 
 const App = () => {
   const [blogs, setBlogs] = useState([])
@@ -76,6 +76,17 @@ const App = () => {
   }
 
   const handleLike = async (id, newLike) => {
+    if (!user) {
+      setMessage({
+        content: 'You must be logged in to like a blog',
+        isSuccess: false,
+      })
+      setTimeout(() => {
+        setMessage(null)
+      }, 5000)
+      return
+    }
+
     const response = await blogService.update(id, newLike)
     setBlogs(blogs.map((blog) => (blog.id === id ? response : blog)))
   }
@@ -112,21 +123,30 @@ const App = () => {
       <Notification message={message} />
       <Routes>
         <Route
+          path='/blogs/:id'
+          element={
+            <SingleBlog
+              blogs={blogs}
+              handleLike={handleLike}
+              handleDelete={handleDelete}
+              user={user}
+            />
+          }
+        />
+        <Route
           path='/'
           element={
             <div>
               <h2>blogs</h2>
-              <div id='blogList'>
+              <ul id='blogList'>
                 {sortedBlogs.map((blog) => (
-                  <Blog
-                    key={blog.id}
-                    blog={blog}
-                    handleLike={handleLike}
-                    handleDelete={handleDelete}
-                    user={user}
-                  />
+                  <li key={blog.id}>
+                    <Link to={`/blogs/${blog.id}`}>
+                      {blog.title} by {blog.author}
+                    </Link>
+                  </li>
                 ))}
-              </div>
+              </ul>
             </div>
           }
         />
