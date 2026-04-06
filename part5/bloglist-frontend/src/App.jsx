@@ -7,11 +7,10 @@ import loginService from './services/login'
 import Togglable from './components/Togglable'
 import Notification from './components/Notification'
 import './index.css'
+import { BrowserRouter as Router, Routes, Route, Link } from 'react-router-dom'
 
 const App = () => {
   const [blogs, setBlogs] = useState([])
-  const [username, setUsername] = useState('')
-  const [password, setPassword] = useState('')
   const [user, setUser] = useState(null)
   const [message, setMessage] = useState(null)
 
@@ -36,16 +35,13 @@ const App = () => {
     }
   }, [])
 
-  const handleLogin = async (e) => {
-    e.preventDefault()
-
+  const handleLogin = async (credentials) => {
+    const { username, password } = credentials
     try {
       const user = await loginService.login({ username, password })
       window.localStorage.setItem('loggedBlogappUser', JSON.stringify(user))
       blogService.setToken(user.token)
       setUser(user)
-      setUsername('')
-      setPassword('')
     } catch {
       setMessage({
         content: 'Wrong username or password',
@@ -95,50 +91,56 @@ const App = () => {
 
   const sortedBlogs = [...blogs].sort((a, b) => b.likes - a.likes)
 
-  return (
-    <div>
-      <Notification message={message} />
-      {!user && (
-        <div>
-          <h2>log in to application</h2>
-          {
-            <LoginForm
-              handleLogin={handleLogin}
-              username={username}
-              password={password}
-              setUsername={setUsername}
-              setPassword={setPassword}
-            />
-          }
-        </div>
-      )}
+  const padding = { padding: 5 }
 
-      {user && (
-        <div>
-          <h2>blogs</h2>
-          <p>
-            {user.name} logged in{' '}
-            <button type='button' onClick={handleLogout}>
-              logout
-            </button>
-          </p>
-          <Togglable buttonLabel='create new blog' ref={createNewRef}>
-            <CreateNew handleCreateNew={handleCreateNew} />
-          </Togglable>
-          <div id='blogList'>
-            {sortedBlogs.map((blog) => (
-              <Blog
-                key={blog.id}
-                blog={blog}
-                handleLike={handleLike}
-                handleDelete={handleDelete}
-                user={user}
-              />
-            ))}
-          </div>
-        </div>
-      )}
-    </div>
+  return (
+    <Router>
+      <div>
+        <Link style={padding} to='/'>
+          blogs
+        </Link>
+        {user ? (
+          <button onClick={handleLogout} style={padding}>
+            logout
+          </button>
+        ) : (
+          <Link style={padding} to='/login'>
+            login
+          </Link>
+        )}
+      </div>
+      <Notification message={message} />
+      <Routes>
+        <Route
+          path='/'
+          element={
+            <div>
+              <h2>blogs</h2>
+              <div id='blogList'>
+                {sortedBlogs.map((blog) => (
+                  <Blog
+                    key={blog.id}
+                    blog={blog}
+                    handleLike={handleLike}
+                    handleDelete={handleDelete}
+                    user={user}
+                  />
+                ))}
+              </div>
+            </div>
+          }
+        />
+        <Route
+          path='/login'
+          element={
+            <div>
+              <h2>log in to application</h2>
+              <LoginForm handleLogin={handleLogin} />
+            </div>
+          }
+        />
+      </Routes>
+    </Router>
   )
 }
 

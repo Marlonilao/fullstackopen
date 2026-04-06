@@ -33,7 +33,7 @@ const Blog = ({ blog, handleLike, handleDelete, user }) => {
             </button>
           </p>
           <p className='author'>Author: {blog.author}</p>
-          {user.username === blog.user.username ? (
+          {user && user.username === blog.user.username ? (
             <div>
               <button
                 type='button'
