@@ -1,8 +1,10 @@
 import { useParams } from 'react-router-dom'
+import { useNavigate } from 'react-router-dom'
 
 const SingleBlog = ({ blogs, handleLike, handleDelete, user }) => {
   const { id } = useParams()
   const blog = blogs.find((b) => b.id === id)
+  const navigate = useNavigate()
 
   const blogStyle = {
     paddingTop: 10,
@@ -10,6 +12,11 @@ const SingleBlog = ({ blogs, handleLike, handleDelete, user }) => {
     border: 'solid',
     borderWidth: 1,
     marginBottom: 5,
+  }
+
+  const handleDeleteButton = () => {
+    handleDelete(blog.id, blog.title, blog.author)
+    navigate('/')
   }
 
   return (
@@ -38,7 +45,7 @@ const SingleBlog = ({ blogs, handleLike, handleDelete, user }) => {
               borderRadius: '20%',
               border: '0',
             }}
-            onClick={() => handleDelete(blog.id, blog.title, blog.author)}
+            onClick={handleDeleteButton}
           >
             remove
           </button>

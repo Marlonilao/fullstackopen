@@ -59,10 +59,7 @@ const App = () => {
     blogService.setToken(null)
   }
 
-  const createNewRef = useRef()
-
   const handleCreateNew = async (blogInfo) => {
-    createNewRef.current.toggleVisible()
     const response = await blogService.create(blogInfo)
 
     setBlogs(blogs.concat(response))
@@ -111,9 +108,14 @@ const App = () => {
           blogs
         </Link>
         {user ? (
-          <button onClick={handleLogout} style={padding}>
-            logout
-          </button>
+          <>
+            <Link style={padding} to='/create'>
+              new blog
+            </Link>
+            <button onClick={handleLogout} style={padding}>
+              logout
+            </button>
+          </>
         ) : (
           <Link style={padding} to='/login'>
             login
@@ -122,6 +124,10 @@ const App = () => {
       </div>
       <Notification message={message} />
       <Routes>
+        <Route
+          path='/create'
+          element={<CreateNew handleCreateNew={handleCreateNew} />}
+        />
         <Route
           path='/blogs/:id'
           element={
