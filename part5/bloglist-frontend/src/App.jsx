@@ -6,7 +6,7 @@ import loginService from './services/login'
 import Togglable from './components/Togglable'
 import Notification from './components/Notification'
 import './index.css'
-import { BrowserRouter as Router, Routes, Route, Link } from 'react-router-dom'
+import { Routes, Route, Link, useMatch } from 'react-router-dom'
 import SingleBlog from './components/SingleBlog'
 
 const App = () => {
@@ -17,6 +17,9 @@ const App = () => {
   // useEffect(() => {
   //   blogService.getAll().then((blogs) => setBlogs(blogs))
   // }, [])
+
+  const match = useMatch('/blogs/:id')
+  const blog = match ? blogs.find((b) => b.id === match.params.id) : null
 
   useEffect(() => {
     const fetchData = async () => {
@@ -89,6 +92,7 @@ const App = () => {
   }
 
   const handleDelete = async (id, title, author) => {
+    console.log('id', id)
     if (window.confirm(`Remove blog ${title} by ${author}`)) {
       await blogService.deleteBlog(id)
       setBlogs(blogs.filter((blog) => blog.id !== id))
@@ -102,7 +106,7 @@ const App = () => {
   const padding = { padding: 5 }
 
   return (
-    <Router>
+    <div>
       <div>
         <Link style={padding} to='/'>
           blogs
@@ -132,7 +136,7 @@ const App = () => {
           path='/blogs/:id'
           element={
             <SingleBlog
-              blogs={blogs}
+              blog={blog}
               handleLike={handleLike}
               handleDelete={handleDelete}
               user={user}
@@ -166,7 +170,7 @@ const App = () => {
           }
         />
       </Routes>
-    </Router>
+    </div>
   )
 }
 

@@ -11,10 +11,10 @@ const CreateNew = (props) => {
     e.preventDefault()
 
     await props.handleCreateNew({ title, author, url })
-    navigate('/')
     setTitle('')
     setAuthor('')
     setUrl('')
+    navigate('/')
   }
 
   return (

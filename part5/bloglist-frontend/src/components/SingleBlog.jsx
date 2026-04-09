@@ -1,9 +1,7 @@
 import { useParams } from 'react-router-dom'
 import { useNavigate } from 'react-router-dom'
 
-const SingleBlog = ({ blogs, handleLike, handleDelete, user }) => {
-  const { id } = useParams()
-  const blog = blogs.find((b) => b.id === id)
+const SingleBlog = ({ blog, handleLike, handleDelete, user }) => {
   const navigate = useNavigate()
 
   const blogStyle = {
@@ -14,9 +12,13 @@ const SingleBlog = ({ blogs, handleLike, handleDelete, user }) => {
     marginBottom: 5,
   }
 
-  const handleDeleteButton = () => {
-    handleDelete(blog.id, blog.title, blog.author)
+  const handleDeleteButton = async () => {
+    await handleDelete(blog.id, blog.title, blog.author)
     navigate('/')
+  }
+
+  if (!blog) {
+    return null
   }
 
   return (
@@ -25,15 +27,17 @@ const SingleBlog = ({ blogs, handleLike, handleDelete, user }) => {
       <p className='url'>Url: {blog.url}</p>
       <p className='likes'>
         Likes: {blog.likes}{' '}
-        <button
-          onClick={() =>
-            handleLike(blog.id, {
-              likes: blog.likes + 1,
-            })
-          }
-        >
-          like
-        </button>
+        {user && (
+          <button
+            onClick={() =>
+              handleLike(blog.id, {
+                likes: blog.likes + 1,
+              })
+            }
+          >
+            like
+          </button>
+        )}
       </p>
       <p className='author'>Author: {blog.author}</p>
       {user && user.username === blog.user.username ? (
