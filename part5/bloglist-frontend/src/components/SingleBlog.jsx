@@ -1,16 +1,9 @@
-import { useParams } from 'react-router-dom'
+import { Links, useParams } from 'react-router-dom'
 import { useNavigate } from 'react-router-dom'
+import { Paper, Link, Button } from '@mui/material'
 
 const SingleBlog = ({ blog, handleLike, handleDelete, user }) => {
   const navigate = useNavigate()
-
-  const blogStyle = {
-    paddingTop: 10,
-    paddingLeft: 2,
-    border: 'solid',
-    borderWidth: 1,
-    marginBottom: 5,
-  }
 
   const handleDeleteButton = async () => {
     await handleDelete(blog.id, blog.title, blog.author)
@@ -22,13 +15,18 @@ const SingleBlog = ({ blog, handleLike, handleDelete, user }) => {
   }
 
   return (
-    <div style={blogStyle}>
+    <Paper elevation={3} style={{ padding: '1rem', margin: '1rem 0' }}>
       <p className='title'>Title: {blog.title}</p>
-      <p className='url'>Url: {blog.url}</p>
+      <Link href={blog.url} target='_blank' rel='noopener noreferrer'>
+        Url: {blog.url}
+      </Link>
+      <p className='author'>Author: {blog.author}</p>
       <p className='likes'>
-        Likes: {blog.likes}{' '}
+        Likes:
+        {blog.likes}{' '}
         {user && (
-          <button
+          <Button
+            variant='outlined'
             onClick={() =>
               handleLike(blog.id, {
                 likes: blog.likes + 1,
@@ -36,26 +34,20 @@ const SingleBlog = ({ blog, handleLike, handleDelete, user }) => {
             }
           >
             like
-          </button>
-        )}
-      </p>
-      <p className='author'>Author: {blog.author}</p>
-      {user && user.username === blog.user.username ? (
-        <div>
-          <button
+          </Button>
+        )}{' '}
+        {user && user.username === blog.user.username ? (
+          <Button
+            variant='outlined'
             type='button'
-            style={{
-              backgroundColor: 'lightblue',
-              borderRadius: '20%',
-              border: '0',
-            }}
+            color='error'
             onClick={handleDeleteButton}
           >
             remove
-          </button>
-        </div>
-      ) : null}
-    </div>
+          </Button>
+        ) : null}
+      </p>
+    </Paper>
   )
 }
 
