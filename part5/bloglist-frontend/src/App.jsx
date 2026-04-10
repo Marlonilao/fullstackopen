@@ -8,6 +8,7 @@ import Notification from './components/Notification'
 import './index.css'
 import { Routes, Route, Link, useMatch } from 'react-router-dom'
 import SingleBlog from './components/SingleBlog'
+import { Container } from '@mui/material'
 
 const App = () => {
   const [blogs, setBlogs] = useState([])
@@ -106,7 +107,7 @@ const App = () => {
   const padding = { padding: 5 }
 
   return (
-    <div>
+    <Container>
       <div>
         <Link style={padding} to='/'>
           blogs
@@ -170,7 +171,7 @@ const App = () => {
           }
         />
       </Routes>
-    </div>
+    </Container>
   )
 }
 
