@@ -8,7 +8,7 @@ import Notification from './components/Notification'
 import './index.css'
 import { Routes, Route, Link, useMatch } from 'react-router-dom'
 import SingleBlog from './components/SingleBlog'
-import { Container } from '@mui/material'
+import { Container, AppBar, Toolbar, Button, Typography } from '@mui/material'
 
 const App = () => {
   const [blogs, setBlogs] = useState([])
@@ -48,8 +48,8 @@ const App = () => {
       setUser(user)
     } catch {
       setMessage({
-        content: 'Wrong username or password',
-        isSuccess: false,
+        text: 'Wrong username or password',
+        type: 'error',
       })
       setTimeout(() => {
         setMessage(null)
@@ -68,8 +68,8 @@ const App = () => {
 
     setBlogs(blogs.concat(response))
     setMessage({
-      content: `a new blog ${response.title} by ${response.author}`,
-      isSuccess: true,
+      text: `a new blog ${response.title} by ${response.author}`,
+      type: 'success',
     })
     setTimeout(() => {
       setMessage(null)
@@ -79,8 +79,8 @@ const App = () => {
   const handleLike = async (id, newLike) => {
     if (!user) {
       setMessage({
-        content: 'You must be logged in to like a blog',
-        isSuccess: false,
+        text: 'You must be logged in to like a blog',
+        type: 'error',
       })
       setTimeout(() => {
         setMessage(null)
@@ -108,25 +108,40 @@ const App = () => {
 
   return (
     <Container>
-      <div>
-        <Link style={padding} to='/'>
-          blogs
-        </Link>
-        {user ? (
-          <>
-            <Link style={padding} to='/create'>
-              new blog
-            </Link>
-            <button onClick={handleLogout} style={padding}>
-              logout
-            </button>
-          </>
-        ) : (
-          <Link style={padding} to='/login'>
-            login
-          </Link>
-        )}
-      </div>
+      <AppBar position='static'>
+        <Toolbar>
+          <Typography variant='h5' component='div' sx={{ flexGrow: 1 }}>
+            Blog App
+          </Typography>
+          <Button color='inherit' component={Link} to='/' style={padding}>
+            blogs
+          </Button>
+          {user ? (
+            <>
+              <Button
+                color='inherit'
+                component={Link}
+                to='/create'
+                style={padding}
+              >
+                new blog
+              </Button>
+              <Button color='inherit' onClick={handleLogout} style={padding}>
+                logout
+              </Button>
+            </>
+          ) : (
+            <Button
+              color='inherit'
+              component={Link}
+              to='/login'
+              style={padding}
+            >
+              login
+            </Button>
+          )}
+        </Toolbar>
+      </AppBar>
       <Notification message={message} />
       <Routes>
         <Route
